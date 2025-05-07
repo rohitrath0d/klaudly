@@ -3,11 +3,11 @@ import * as  dotenv from "dotenv"
 import { defineConfig } from 'drizzle-kit';
 
 dotenv.config({
-    path: ".env"
+    path: ".env.local"
 })
 
 if (!process.env.DATABASE_URL) {
-    throw new Error("Database url is not set in .env")
+    throw new Error("Database url is not set in .env.local")
 }
 
 export default defineConfig({
@@ -20,7 +20,7 @@ export default defineConfig({
 
     // more configurations that we can do apart from the upper ones (which are compulsory), below ones are optional.
     migrations: {
-        table: "__drizzle_migration",
+        table: "__drizzle_migrations",
         schema: "public"
     },
     verbose: true,              // this will show all the things as true, which drizzle is doing behind the scenes.
