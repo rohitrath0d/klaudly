@@ -114,15 +114,15 @@ export default function SignUPForm(){
         // if the sessionId is created, route user to the  other page.
         router.push("/dashboard")
       } else {
-          console.error("Verification incomplete", result);
+          console.error("Verification incomplete: ", result);
           setVerificationError(
-            "Verification could not be complete"
+            "Verification could not be completed. Please try again."
           );
       }
     } catch (error: any) {
-      console.error("Verification incomplete", error);
+      console.error("Verification error: ", error);
       setVerificationError(
-        error.errors?.[0]?.message || "An error occured during the sign up. Please try again."
+        error.errors?.[0]?.message || "An error occurred during verification. Please try again."
       )
     } finally {
       setIsSubmitting(false)  
@@ -360,7 +360,7 @@ export default function SignUPForm(){
 
       <CardFooter className="flex justify-center py-4">
         <p className="text-sm text-default-600">
-          Already have an account? {""}
+          Already have an account? {" "}
           <Link
             href="/sign-in"
             className="text-primary hover:underline font-medium"
