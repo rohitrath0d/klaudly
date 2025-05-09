@@ -61,6 +61,7 @@ export default function SignInForm(){
       // from documentation of clerk
       if(result.status === "complete"){
         await setActive({session: result.createdSessionId})                 // creating a session id, using result (handled by clerk itself)
+        // if session is created, push the user to the dashboard.
         router.push("/dashboard");
       } else{
         console.error("Sign-in incomplete:", result);
@@ -190,5 +191,4 @@ export default function SignInForm(){
 
     </Card>
   )
-
 }

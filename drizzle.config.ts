@@ -7,7 +7,7 @@ dotenv.config({
 })
 
 if (!process.env.DATABASE_URL) {
-    throw new Error("Database url is not set in .env.local")
+    throw new Error("Database url is not set in the environment variables")
 }
 
 export default defineConfig({
