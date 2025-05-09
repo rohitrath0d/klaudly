@@ -2,8 +2,8 @@ import * as z from "zod";
 
 export const signInSchema = z
     .object({
-      // identifier: z         // why used identifier -> for working with clerk, this makes more sense.
-      email: z
+      identifier: z         // why used identifier -> for working with clerk, this makes more sense.
+      // email: z
         .string()
         .min(1, {message: "Email can't be an empty field"})
         .email({message: "Please enter a valid email"}),
