@@ -2,7 +2,6 @@
 import { auth } from "@clerk/nextjs/server";        // we will be using this auth on the backend part, and that's why it needs to come with the server.
 import { NextResponse } from "next/server";
 import ImageKit from "imagekit";
-import { error } from "console";
 
 
 // from imagekit documentation

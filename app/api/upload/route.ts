@@ -5,7 +5,6 @@ import { db } from "@/lib/db";
 import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
-import { use } from "react";
 
 //  IMPORTANT:- 
 // How do we upload any data? --> whenever any data is uploaded, we use the imagekit component and the image/video goes inside the imagekit component
@@ -66,8 +65,6 @@ export async function POST(request: NextRequest) {
                                                                                   // Even if you're inserting just one row, it still comes back as a 1-element array.  [newFile] -> destructuring from array   &&  {newFile} -> destructuring from objects.
   // sends the response
   return NextResponse.json(newFile)
-
-  
   } catch (error) {
     return NextResponse.json({error: "Failed to save info to database"}, {status: 500})
   }
