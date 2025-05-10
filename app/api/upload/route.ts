@@ -70,7 +70,6 @@ export async function POST(request: NextRequest) {
   
   } catch (error) {
     return NextResponse.json({error: "Failed to save info to database"}, {status: 500})
-
   }
 }
 
