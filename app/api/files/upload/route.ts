@@ -2,7 +2,6 @@
 import { db } from "@/lib/db";
 import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { form } from "@heroui/theme";
 import { error } from "console";
 import { and, eq, isNull } from "drizzle-orm";
 import ImageKit from "imagekit";
@@ -65,9 +64,9 @@ export async function POST(request: NextRequest){
     //   return NextResponse.json({error: "Parent folder not found"},{status: 401})
     // }
     
-    // totally optional based on your flow.
+    // totally optional based on your flow. 
     if(!parentId){
-      return NextResponse.json({error: "Parent folder not found"},{status: 401})
+      return NextResponse.json({error: "Parent folder not found"},{status: 401})            
     }
 
     // check if the file is of type image/pdf         -> for png it could be simply "image/png"
@@ -88,11 +87,27 @@ export async function POST(request: NextRequest){
     const folderPath = parentId ? `/droply/${userId}/folder/${parentId}` : `/droply/${userId}`        // how the folder path looks, when parenId exists, and when does it not.
     
     const originalFilename = file.name
-    // fileExtension
+
+    // fileExtension 
+    // originalFilename is your file name — like "photo.png" or "document.pdf"
+    // .split(".") breaks that name into pieces wherever there's a dot: "photo.png" becomes ["photo", "png"]    ||    "resume.final.pdf" becomes ["resume", "final", "pdf"]   ||   "noextension" becomes ["noextension"] (here no . exists)
+    // .pop() takes the last item from that list — this is what we consider the file extension:  ["photo", "png"] → pops "png"     ||       ["resume", "final", "pdf"] → pops "pdf"       ||        ["noextension"] → pops "noextension" (which is wrong — but that’s why we add a check)
+    //    || "" — this is a fallback:   If pop() returns undefined (e.g., if the file was just ""), then use an empty string instead, to avoid crashing the code.
     const fileExtension = originalFilename.split(".").pop() || ""
 
     // check for empty extension
-    // validation for not storing exe, php
+    // if(!fileExtension || fileExtension === originalFilename){            //
+    // --> So why do we need !originalFilename.includes(".")?
+    // Because for files like "file" (no dot at all):       split(".") gives ["file"]  &   .pop() gives "file" — which is not an actual extension! That slips past the !fileExtension check unless you do something extra. hence originalname must include "."
+    if(!fileExtension || originalFilename.includes(".")){
+      return NextResponse.json({error: "File type not supported or allowed."}, {status: 401});
+    }
+    
+    // validation for not storing exe, php -> (for preventing injection of malware files )
+    const blockedExtensions = ["exe", "php"];
+    if(blockedExtensions.includes(fileExtension.toLowerCase())){
+      return NextResponse.json({error: "File type not supported or allowed"}, {status: 401});
+    }
 
     // creating unique fileName
     const uniqueFilename = `${uuidv4()}.${fileExtension}`
@@ -132,6 +147,3 @@ export async function POST(request: NextRequest){
 
 // the main basis understanding for this upload is ->
 // even if i don't want to upload it through the frontend itself, i can have my own endpoint, more validations, and how can i have an endpoint to upload files to the imagekit.
-
-
-
