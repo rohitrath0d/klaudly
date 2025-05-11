@@ -122,7 +122,7 @@ export async function POST(request: NextRequest){
       useUniqueFileName: false,   // if turn this true -> don't need to do (but get more control) originalFilename and fileExtension
     })
 
-    // create a fileDaya
+    // create a fileData
     const fileData ={
       name: originalFilename,
       path: uploadResponse.filePath,
