@@ -24,7 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // we can add ClerkProvider at many places, but in layout.tsx wrapping it in html rendering makes it super simple to work with. now any provider of clerk will directly be able to access it on the frontend part. 
+    // we can add ClerkProvider at many places, but in layout.tsx wrapping it in html rendering makes it super simple to work with. now any provider of clerk will directly be able to access it on the frontend part.
+    // Suppose, in any of the pages -> we might need clerk provider and all of that -> just because we have imported clerkProvider in the layout.tsx -> we can use the clerk anywhere now. -> even in backend , also frontend (has some equal hooks for it)
     <ClerkProvider>
 
       <html lang="en">
