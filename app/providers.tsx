@@ -6,12 +6,31 @@
 "use client"
 import type {ThemeProviderProps} from "next-themes"
 import {ThemeProvider as NextThemesProvider} from "next-themes"
+import {ImageKitProvider} from "imagekitio-next"      // This provider needs you to make you a request on the endpoint(api/imagekit-auth) and gets this authenticator function, because there are props (credential keys and functionalities/flow) that needs to be passed on this provider (ImagekitProvider),and then we can use it in the frontend using an authenticator function.
+
 
 export interface ProviderProps {
   children: React.ReactNode,
   themeProps?: ThemeProviderProps
 }
 
+// authenticator function:-
+// we using the frontend part for imagekit ("use client") and not for the backend (backend api endpoint hitting -> we need imagekit initialization with its credentials.)
+// hence, Since, we are using a client component (use client), it is expected to wrap the things with this kinds of things.Specially an "authenticator function". (read documentation of uploading files examples) 
+
+// ImageKitProvider wraps components and provides image upload features.
+// It needs authentication parameters, which must come from a secure backend endpoint (/api/imagekit-auth).
+// Since this is a client component, we can't expose credentials here, so we use an authenticator function that fetches these parameters from our backend.
+const authenticator = async() => {
+  try {
+    const response = await fetch("/api/imagekit-auth");       // makes fetch request to our own endpoint (api/imagekit-auth), which gives us a response data.
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Authentication error: ", error);
+    throw error;
+  }
+};  
 
 export function Providers({children, themeProps}: ProviderProps){
   return(
