@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Providers } from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,11 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+          {/* we have the clerkProvider wrapping up everything, all we have to do is wrap up the {children}, as did same in the ClerkProvider */}
+          <Providers>
+            {/* wrapping the whole layout, with Providers function that provides all the Providers*/}
           {children}
+          </Providers>
         </body>
       </html>
 
