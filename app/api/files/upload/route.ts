@@ -140,7 +140,7 @@ export async function POST(request: NextRequest){
 
     return NextResponse.json(newFile)
   } catch (error) {
-    return NextResponse.json({error: "Failed to upload file"}, {status: 401})
+    return NextResponse.json({error: "Failed to upload file"}, {status: 500})
   }
 }
 

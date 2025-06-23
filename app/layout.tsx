@@ -29,12 +29,13 @@ export default function RootLayout({
     // Suppose, in any of the pages -> we might need clerk provider and all of that -> just because we have imported clerkProvider in the layout.tsx -> we can use the clerk anywhere now. -> even in backend , also frontend (has some equal hooks for it)
     <ClerkProvider>
 
-      <html lang="en">
+      <html lang="en"  suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           {/* we have the clerkProvider wrapping up everything, all we have to do is wrap up the {children}, as did same in the ClerkProvider */}
           <Providers>
+
             {/* wrapping the whole layout, with Providers function that provides all the Providers*/}
           {children}
           </Providers>

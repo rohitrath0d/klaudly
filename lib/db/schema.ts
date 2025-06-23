@@ -35,7 +35,7 @@ export const files = pgTable("files", {
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
 
-})
+});
 
 
 // now in this application, what we majorly have to learn is having a relationship with the own table --> SELF RELATION
@@ -57,13 +57,15 @@ export const filesRelations = relations(files, ({one, many}) => ({
 
     // relationship to child file/folder
     children: many(files)           // indicates -> there could be many childrens inside one folder -> meaning many files inside one folder.
-}))
+}));
 
 
 // Type definitions  -> super power of drizzle
 
-export const File = typeof files.$inferSelect              // -> this has nothing to do with the database itself, it's just exporting me a variable known as file, and whenever i use this type of schema, it can give me a suggestion for using this.
-export const NewFile = typeof files.$inferInsert           // -> at the time of inserting anything in the database, or to get any value outside of the database, it will mark what is compulsory and what is not, and if we change the schema it automatically re-generates the schema too.
+// export const File = typeof files.$inferSelect              // -> this has nothing to do with the database itself, it's just exporting me a variable known as file, and whenever i use this type of schema, it can give me a suggestion for using this.
+export type File = typeof files.$inferSelect              // -> this has nothing to do with the database itself, it's just exporting me a variable known as file, and whenever i use this type of schema, it can give me a suggestion for using this.
+// export const NewFile = typeof files.$inferInsert           // -> at the time of inserting anything in the database, or to get any value outside of the database, it will mark what is compulsory and what is not, and if we change the schema it automatically re-generates the schema too.
+export type NewFile = typeof files.$inferInsert           // -> at the time of inserting anything in the database, or to get any value outside of the database, it will mark what is compulsory and what is not, and if we change the schema it automatically re-generates the schema too.
 
 
 

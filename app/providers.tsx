@@ -14,6 +14,12 @@ import { useRouter } from "next/navigation"
 import { createContext, useContext } from "react";
 
 
+
+export interface ProviderProps {
+  children: React.ReactNode,
+  themeProps?: ThemeProviderProps
+}
+
 declare module "@react-types/shared" {
   interface RouterConfig {
     routerOptions: NonNullable<
@@ -36,10 +42,6 @@ export const ImageKitAuthContext = createContext<{
 export const useImageKitAuth = () => useContext(ImageKitAuthContext);
 
 
-export interface ProviderProps {
-  children: React.ReactNode,
-  themeProps?: ThemeProviderProps
-}
 
 // authenticator function:-
 // we using the frontend part for imagekit ("use client") and not for the backend (backend api endpoint hitting -> we need imagekit initialization with its credentials.)
