@@ -7,8 +7,13 @@
 //   },
 // }
 
-export default {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  }
-}
+// export default {
+//   plugins: {
+//     "@tailwindcss/postcss": {},
+//   }
+// }
+
+export const plugins = {
+  tailwindcss: {},
+  autoprefixer: {},
+};

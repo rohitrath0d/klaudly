@@ -24,9 +24,6 @@ const nextConfig = {
         hostname: "images.unsplash.com",
         port: "",
         pathname: "/**",
-      },
-      {
-        "presets": ["next/babel"]
       }
     ],
   },
