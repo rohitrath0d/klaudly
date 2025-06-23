@@ -62,7 +62,6 @@
   "devDependencies": {
     "@next/eslint-plugin-next": "15.0.4",
     "@next/swc-wasm-nodejs": "^15.3.4",
-    "@next/swc-win32-x64-msvc": "^15.3.4",
     "@react-types/shared": "3.25.0",
     "@tailwindcss/postcss": "^4.1.10",
     "@types/node": "20.5.7",
