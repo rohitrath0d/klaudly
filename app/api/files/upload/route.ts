@@ -84,7 +84,7 @@ export async function POST(request: NextRequest){
 
 
     // how the parent structure or the folder path exist, when you want to upload to the root directory and when you want to upload in the subfolder 
-    const folderPath = parentId ? `/droply/${userId}/folder/${parentId}` : `/droply/${userId}`        // how the folder path looks, when parenId exists, and when does it not.
+    const folderPath = parentId ? `/klaudly/${userId}/folder/${parentId}` : `/klaudly/${userId}`        // how the folder path looks, when parenId exists, and when does it not.
     
     const originalFilename = file.name
 

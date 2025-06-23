@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
   // extract the data and construct our own file data -> and save it.
   const fileData = {
     name: imagekit.name || "untitled",
-    path: imagekit.filePath || `/droply/${userId}/${imagekit.name}`,
+    path: imagekit.filePath || `/klaudly/${userId}/${imagekit.name}`,
     size: imagekit.size || 0,
     type: imagekit.fileType || "image",
     fileUrl: imagekit.url,
