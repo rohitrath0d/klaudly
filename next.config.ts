@@ -25,6 +25,9 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        "presets": ["next/babel"]
+      }
     ],
   },
 };
