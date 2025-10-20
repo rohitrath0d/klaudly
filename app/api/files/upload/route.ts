@@ -2,12 +2,10 @@
 import { db } from "@/lib/db";
 import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { error } from "console";
 import { and, eq, isNull } from "drizzle-orm";
 import ImageKit from "imagekit";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";                             // Provides the unique names
-
 
 // initialization of imagekit object (from documentation)
 // imagekit credentials
@@ -19,59 +17,65 @@ const imagekit = new ImageKit({
 
 
 // initialization of endpoint
-export async function POST(request: NextRequest){
+export async function POST(request: NextRequest) {
 
   try {
-    const {userId} = await auth();
-    if(!userId){
-      return NextResponse.json({error: "Unauthorized"}, {status: 401});
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    console.log("auth userId", userId)
+
 
     // parse a formData
     // IMPORTANT:- EVERYTHING REQUIRES AWAIT IN THE NEXTJS, WHENEVER YOU RECEIVE THE DATA BODY OR FROM WHATEVER YOU LIKE IT.
     const formData = await request.formData()
-    
+
     // extract 3 things from the formData
     // parse form data
     const file = formData.get("file") as File                        // basically it's a buffer ->blob/buffer (read about this in detail)
+    console.log("File", file);
     const formUserId = formData.get("userId") as string
-    const parentId= formData.get("parentId") as string || null
+    console.log("formUserId", formUserId)
+    const parentId = formData.get("parentId") as string || null
 
     // match the id with the userId
-    if(formUserId !== userId){
-      return NextResponse.json({error: "Unauthorized"}, {status: 401});
+    if (formUserId !== userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     }
     // if file doesn't exists
-    if(!file){
-      return NextResponse.json({error: "No file provided"}, {status: 401});
+    if (!file) {
+      return NextResponse.json({ error: "No file provided" }, { status: 401 });
     }
     // 
-    if(parentId){
+    if (parentId) {
       // if have parentId -> query the database to match the conditions
       const [parentFolder] = await db
-          .select()
-          .from(files)
-          .where(
-            and(
-              eq(files.id, parentId),              // folder parent id of that file -> it exists
-              eq(files.userId, userId),
-              eq(files.isFolder, true)              // should be a folder (boolean flag)
-            )
+        .select()
+        .from(files)
+        .where(
+          and(
+            eq(files.id, parentId),              // folder parent id of that file -> it exists
+            eq(files.userId, userId),
+            eq(files.isFolder, true)              // should be a folder (boolean flag)
           )
+        )
+      console.log("ParentFolder", parentFolder);
+
     }
-    //  else{
-    //   return NextResponse.json({error: "Parent folder not found"},{status: 401})
-    // }
-    
-    // totally optional based on your flow. 
-    if(!parentId){
-      return NextResponse.json({error: "Parent folder not found"},{status: 401})            
+     else{
+      return NextResponse.json({error: "Parent folder not found"},{status: 401})
     }
 
+    // totally optional based on your flow. 
+    // if (!parentId) {
+    //   return NextResponse.json({ error: "Parent folder not found" }, { status: 401 })
+    // }
+
     // check if the file is of type image/pdf         -> for png it could be simply "image/png"
-    if(!file.type.startsWith("image/") && file.type !== "application/pdf"){
-      return NextResponse.json({error: "Only images and pdf are supported"}, {status: 401});
+    if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
+      return NextResponse.json({ error: "Only images and pdf are supported" }, { status: 401 });
     }
 
 
@@ -80,12 +84,12 @@ export async function POST(request: NextRequest){
     const buffer = await file.arrayBuffer()
 
     // create a file buffer
-    const fileBuffer= Buffer.from(buffer)
+    const fileBuffer = Buffer.from(buffer)
 
 
     // how the parent structure or the folder path exist, when you want to upload to the root directory and when you want to upload in the subfolder 
     const folderPath = parentId ? `/klaudly/${userId}/folder/${parentId}` : `/klaudly/${userId}`        // how the folder path looks, when parenId exists, and when does it not.
-    
+
     const originalFilename = file.name
 
     // fileExtension 
@@ -99,14 +103,17 @@ export async function POST(request: NextRequest){
     // if(!fileExtension || fileExtension === originalFilename){            //
     // --> So why do we need !originalFilename.includes(".")?
     // Because for files like "file" (no dot at all):       split(".") gives ["file"]  &   .pop() gives "file" — which is not an actual extension! That slips past the !fileExtension check unless you do something extra. hence originalname must include "."
-    if(!fileExtension || originalFilename.includes(".")){
-      return NextResponse.json({error: "File type not supported or allowed."}, {status: 401});
+    if (!fileExtension || !originalFilename.includes(".")) {
+      return NextResponse.json({ error: "File type not supported or allowed." }, { status: 401 });
     }
-    
+
+    console.log("File extension of uploaded file:", fileExtension);
+
+
     // validation for not storing exe, php -> (for preventing injection of malware files )
     const blockedExtensions = ["exe", "php"];
-    if(blockedExtensions.includes(fileExtension.toLowerCase())){
-      return NextResponse.json({error: "File type not supported or allowed"}, {status: 401});
+    if (blockedExtensions.includes(fileExtension.toLowerCase())) {
+      return NextResponse.json({ error: "File type not supported or allowed" }, { status: 401 });
     }
 
     // creating unique fileName
@@ -123,7 +130,7 @@ export async function POST(request: NextRequest){
     })
 
     // create a fileData
-    const fileData ={
+    const fileData = {
       name: originalFilename,
       path: uploadResponse.filePath,
       size: file.size,
@@ -136,11 +143,11 @@ export async function POST(request: NextRequest){
       isStarred: false,
       isTrash: false,
     }
-    const [newFile]= await db.insert(files).values(fileData).returning()     // we have to provide the value. can't insert directly.
+    const [newFile] = await db.insert(files).values(fileData).returning()     // we have to provide the value. can't insert directly.
 
     return NextResponse.json(newFile)
   } catch (error) {
-    return NextResponse.json({error: "Failed to upload file"}, {status: 500})
+    return NextResponse.json({ error: "Failed to upload file" }, { status: 500 })
   }
 }
 

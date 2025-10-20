@@ -91,21 +91,28 @@ export default function FileUploadForm({
   const handleUpload = async () => {
     if (!file) return;
 
+    console.log("File present:", file);
+    console.log("File type:", file.type);
+
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("userId", userId);
     if (currentFolder) {
       formData.append("parentId", currentFolder);
     }
+    console.log("Uploading to current folder:", currentFolder);
+
 
     setUploading(true);
     setProgress(0);
     setError(null);
 
     try {
-      await axios.post("/api/files/upload", formData, {
+      const fileUpload = await axios.post("/api/files/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          userId: userId,
         },
         onUploadProgress: (progressEvent) => {
           if (progressEvent.total) {
@@ -116,6 +123,9 @@ export default function FileUploadForm({
           }
         },
       });
+      console.log("File uploaded successfully", fileUpload);
+      // console.error("File uploaded error", fileUpload);
+
 
       addToast({
         title: "Upload Successful",
@@ -156,11 +166,14 @@ export default function FileUploadForm({
     setCreatingFolder(true);
 
     try {
-      await axios.post("/api/folders/create", {
+      const uploadFolder = await axios.post("/api/folder/create", {
         name: folderName.trim(),
         userId: userId,
         parentId: currentFolder,
       });
+      console.log("Uploaded folder", uploadFolder);
+      // console.log("Received parentId:", req.body.parentId);
+
 
       addToast({
         title: "Folder Created",
@@ -216,13 +229,12 @@ export default function FileUploadForm({
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-          error
-            ? "border-danger/30 bg-danger/5"
-            : file
-              ? "border-primary/30 bg-primary/5"
-              : "border-default-300 hover:border-primary/5"
-        }`}
+        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${error
+          ? "border-danger/30 bg-danger/5"
+          : file
+            ? "border-primary/30 bg-primary/5"
+            : "border-default-300 hover:border-primary/5"
+          }`}
       >
         {!file ? (
           <div className="space-y-3">

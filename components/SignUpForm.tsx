@@ -161,7 +161,7 @@ export default function SignUPForm(){
         </div>
           )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleVerificationSubmit} className="space-y-6">
 
           <div className="space-y-2">
             <label 
